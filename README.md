@@ -173,7 +173,7 @@ See `requirements.txt`. Key packages:
 | Tang Ningjie (唐凝捷) | Experimental work |
 | Zhang Junwei (张俊炜) | Experimental work |
 
-**Supervisor:** Prof. Xie Jiangsheng (谢江生), Associate Professor, School of Materials Science, Sun Yat-sen University
+**Supervisor:** Prof. Xie Jiangsheng (谢江生), Professor, School of Materials, Sun Yat-sen University
 
 ---
 
@@ -197,4 +197,4 @@ This project is released under the MIT License. The experimental dataset (`ML_da
 
 ## 🙏 Acknowledgements
 
-This work was supported by Sun Yat-sen University Innovation Training Program (Provincial Level, No. 20250057). We thank the School of Materials Science for providing laboratory facilities and the REINVENT4 team (Molecular AI, AstraZeneca) for the open-source molecular generation framework.
+This work was supported by Sun Yat-sen University Innovation Training Program (Provincial Level, No. 20250057). We thank the School of Materials for providing laboratory facilities and the REINVENT4 team (Molecular AI, AstraZeneca) for the open-source molecular generation framework.
