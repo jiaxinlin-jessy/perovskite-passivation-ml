@@ -2,7 +2,7 @@
 
 > **Machine Learning-Driven Optimization of Perovskite Solar Cell Interface Passivation Agents**
 > 
-> Sun Yat-sen University · School of Materials Science and Engineering · Innovation Training Project (No. 20250057)
+> Sun Yat-sen University · School of Materials · Innovation Training Project (No. 20250057)
 
 ---
 
