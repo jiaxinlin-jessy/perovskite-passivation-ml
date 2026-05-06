@@ -1,0 +1,186 @@
+run_type="staged_learning"
+use_cuda=true#runontheGPUiftrue,ontheCPUiffalse
+tb_logdir="tb_logs" #nameoftheTensorBoardloggingdirectory
+json_out_config="_staged_learning.json" #writethisTOMLtoJSON
+[parameters]
+summary_csv_prefix="staged_learning" #prefixfortheCSVfile
+use_checkpoint=false #iftruereaddiversityfilterfromagent_file
+purge_memories=false #iftruepurgealldiversityfiltermemoriesaftereachstage
+##Mol2Mol
+prior_file="C:/Users/25146/Desktop/REINVENT4-main/priors/mol2mol_high_similarity.prior"
+agent_file="C:/Users/25146/Desktop/REINVENT4-main/priors/mol2mol_high_similarity.prior"
+smiles_file="C:/Users/25146/Desktop/REINVENT4-main/configs/mol2mol.smi" #1compound
+perline
+sample_strategy="multinomial" #multinomialorbeamsearch(deterministic)
+distance_threshold=100
+batch_size=64 #network
+unique_sequences=true #iftrueremoveallduplicatesrawsequencesineachstep
+#onlyhereforbackwardcompatibility
+randomize_smiles=true #iftrueshuffleatomsinSMILESrandomly
+[learning_strategy]
+type="dap" #dap:onlyonesupported
+sigma=128 #sigmaoftheRLrewardfunction
+rate=0.0001 #fortorch.optim
+[diversity_filter] #optional,commentsectionoutorremoveifunneeded
+#NOTE:alsomemorizesallseenSMILES
+type="IdenticalMurckoScaffold"#IdenticalTopologicalScaffold,
+#ScaffoldSimilarity,PenalizeSameSmiles
+bucket_size=25 #memorysizeinnumberofcompounds
+minscore=0.4 #onlymemorizeifthisthresholdisexceeded
+minsimilarity=0.4 #minimumsimilarityforScaffoldSimilarity
+penalty_multiplier=0.5 #penaltyfactorforPenalizeSameSmiles
+[[stage]]
+chkpt_file='test1.chkpt' #nameofthecheckpointfile,canbereusedasagent
+termination="simple" #terminationcriterionfotthisstage
+max_score=0.7#terminateifthistotalscoreisexceeded
+min_steps=1#runforatleastthisnumberofsteps
+max_steps=20#terminateentirerunwhenexceeded
+[stage.scoring]
+type="geometric_mean" #aggregationfunction
+[[stage.scoring.component]]
+#Customalertsifusedinacustom_productfilteroutunwantedgroups
+[stage.scoring.component.custom_alerts]
+[[stage.scoring.component.custom_alerts.endpoint]]
+name="UnwantedSMARTS" #userchosennameforoutput
+weight=0.79#weighttofine-tunetherelevanceofthiscomponent
+#parametersforthecomponent:
+#alistofunwantedSMARTS(!)tobescoredaszero
+params.smarts=[
+"[*;r8]",
+"[*;r9]",
+"[*;r10]",
+"[*;r11]",
+"[*;r12]",
+"[*;r13]",
+"[*;r14]",
+"[*;r15]",
+"[*;r16]",
+"[*;r17]",
+"[#8][#8]",
+"[#6;+]",
+"[#16][#16]",
+"[#7;!n][S;!$(S(=O)=O)]",
+"[#7;!n][#7;!n]",
+"C#C",
+"C(=[O,S])[O,S]",
+"[#7;!n][C;!$(C(=[O,N])[N,O])][#16;!s]",
+"[#7;!n][C;!$(C(=[O,N])[N,O])][#7;!n]",
+"[#7;!n][C;!$(C(=[O,N])[N,O])][#8;!o]",
+"[#8;!o][C;!$(C(=[O,N])[N,O])][#16;!s]",
+"[#8;!o][C;!$(C(=[O,N])[N,O])][#8;!o]",
+"[#16;!s][C;!$(C(=[O,N])[N,O])][#16;!s]"
+]
+[[stage.scoring.component]]
+[stage.scoring.component.MolecularWeight]
+[[stage.scoring.component.MolecularWeight.endpoint]]
+name="MW" #userchosennameforoutput
+weight=0.190583#weighttofine-tunetherelevanceofthiscomponent
+transform.type="double_sigmoid"
+transform.high=200
+transform.low=100
+[[stage.scoring.component]]
+[stage.scoring.component.TPSA]
+[[stage.scoring.component.TPSA.endpoint]]
+name="TPSA" #userchosennameforoutput
+weight=0.075247#weighttofine-tunetherelevanceofthiscomponent
+transform.type="double_sigmoid"
+transform.high=50
+transform.low=26
+[[stage.scoring.component]]
+[stage.scoring.component.NumHeavyAtoms]
+[[stage.scoring.component.NumHeavyAtoms.endpoint]]
+name="NumHeavyAtoms" #userchosennameforoutput
+weight=0.066784#weighttofine-tunetherelevanceofthiscomponent
+transform.type="double_sigmoid"
+transform.high=20
+transform.low=5
+[[stage.scoring.component]]
+[stage.scoring.component.NumHeteroAtoms]
+[[stage.scoring.component.NumHeteroAtoms.endpoint]]
+name="NumHeteroAtoms" #userchosennameforoutput
+weight=0.030286#weighttofine-tunetherelevanceofthiscomponent
+transform.type="double_sigmoid"
+transform.high=5
+transform.low=0
+[[stage.scoring.component]]
+[stage.scoring.component.numsp2]
+[[stage.scoring.component.numsp2.endpoint]]
+name="numsp2" #userchosennameforoutput
+weight=0.025855#weighttofine-tunetherelevanceofthiscomponent
+transform.type="double_sigmoid"
+transform.high=15
+transform.low=1
+[[stage.scoring.component]]
+[stage.scoring.component.HBondDonors]
+[[stage.scoring.component.HBondDonors.endpoint]]
+name="HBondDonors" #userchosennameforoutput
+weight=0.050876#weighttofine-tunetherelevanceofthiscomponent
+transform.type="double_sigmoid"
+transform.high=5
+transform.low=0
+[[stage.scoring.component]]
+[stage.scoring.component.HBondAcceptors]
+[[stage.scoring.component.HBondAcceptors.endpoint]]
+name="HBondAcceptors" #userchosennameforoutput
+weight=0.015080#weighttofine-tunetherelevanceofthiscomponent
+transform.type="double_sigmoid"
+transform.high=5
+transform.low=0
+[[stage.scoring.component]]
+[stage.scoring.component.Csp3]
+[[stage.scoring.component.Csp3.endpoint]]
+name="Csp3" #userchosennameforoutput
+weight=0.09328858#weighttofine-tunetherelevanceofthiscomponent
+transform.type="double_sigmoid"
+transform.high=0.5
+transform.low=0
+[[stage.scoring.component]]
+[stage.scoring.component.numsp3]
+[[stage.scoring.component.numsp3.endpoint]]
+name="numsp3" #userchosennameforoutput
+weight=0.049825#weighttofine-tunetherelevanceofthiscomponent
+transform.type="double_sigmoid"
+transform.high=10
+transform.low=1
+[[stage.scoring.component]]
+[stage.scoring.component.NumAromaticRings]
+[[stage.scoring.component.NumAromaticRings.endpoint]]
+name="NumAromaticRings" #userchosennameforoutput
+weight=0.029330#weighttofine-tunetherelevanceofthiscomponent
+transform.type="double_sigmoid"
+transform.high=2
+transform.low=0
+[[stage.scoring.component]]
+[stage.scoring.component.NumRotBond]
+[[stage.scoring.component.NumRotBond.endpoint]]
+name="NumRotBond" #userchosennameforoutput
+weight=0.025696#weighttofine-tunetherelevanceofthiscomponent
+transform.type="double_sigmoid"
+transform.high=5
+transform.low=0
+[[stage.scoring.component]]
+[stage.scoring.component.NumAtomStereoCenters]
+[[stage.scoring.component.NumAtomStereoCenters.endpoint]]
+name="NumAtomStereoCenters" #userchosennameforoutput
+weight=0.05152139#weighttofine-tunetherelevanceofthiscomponent
+transform.type="double_sigmoid"
+transform.high=2
+transform.low=0
+[[stage.scoring.component]]
+[stage.scoring.component.numsp]
+[[stage.scoring.component.numsp.endpoint]]
+name="numsp" #userchosennameforoutput
+weight=0#weighttofine-tunetherelevanceofthiscomponent
+transform.type="double_sigmoid"
+transform.high=0
+transform.low=0
+#ConfigurationofthescoringcomponentinTOMLformat
+[[stage.scoring.component]]
+[stage.scoring.component.SlogP]
+[[stage.scoring.component.SlogP.endpoint]]
+name="SlogP(RDKit)"
+weight=0.669628
+transform.type="reverse_sigmoid"
+transform.high=3
+transform.low=1
+transform.k=0.5
