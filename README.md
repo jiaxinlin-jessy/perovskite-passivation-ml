@@ -168,10 +168,11 @@ See `requirements.txt`. Key packages:
 
 | Name | Role |
 |------|------|
-| Lin Jiaxin (林嘉馨) | ML model training, data analysis |
+| **Lin Jiaxin (林嘉馨)** | **Project Leader** · ML model training · Data analysis |
 | Xu Wenli (徐文丽) | Reinforcement learning model |
 | Tang Ningjie (唐凝捷) | Experimental work |
 | Zhang Junwei (张俊炜) | Experimental work |
+
 
 **Supervisor:** Prof. Xie Jiangsheng (谢江生), Professor, School of Materials, Sun Yat-sen University
 
